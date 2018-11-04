@@ -25,29 +25,48 @@ Sample Usage:\n
         attachments: []
       });
     }
-
-	var filteredArray = blob.filter(el=> {
-        return (el["Areas of Expertise"] + " " + el["Location/Notes"]).toLowerCase().match(text.toLowerCase());
-      });
-      var response = "Found " + filteredArray.length + " experts on " + text + "\n";
-      filteredArray.forEach(el => {
-		  if (validateEmail(el["Email"])){
-		  	response = response + "<mailto://" + el["Email"] + "|" + el["Name"] + "> | "
-		  }
-		  else {
-		  	response = response + el["Name"] + " | "
-		  }
-		  if (el["Areas of Expertise"].length > 100) {
-			  response = response + el["Areas of Expertise"].replace("\n", ", ").substring(0, 100) + "...\n"		  	
-		  }
-		  else {
-			  response = response + el["Areas of Expertise"].replace("\n", ", ") + "\n"		  			  	
-		  }
-      });
-      callback(null, { 
-        text: response,
-        attachments: []
-      });
+	if (text.match("in ")){
+		var exp = text.split(" in ")[0];
+		var loc = text.split(" in ")[1];
+		var filteredArray = blob.filter(el=> {
+	        return el["Areas of Expertise"].toLowerCase().match(exp.toLowerCase()) && el["Location/Notes"].toLowerCase().match(loc.toLowerCase());
+	    });
+		
+	}
+	else{
+		var filteredArray = blob.filter(el=> {
+	        return (el["Areas of Expertise"] + " " + el["Location/Notes"]).toLowerCase().match(text.toLowerCase());
+	    });		
+	}
+	var response = "Found " + filteredArray.length + " experts on " + text + "\n";
+	filteredArray.forEach(el => {
+	  if (validateEmail(el["Email"])){
+	  	response = response + "<mailto://" + el["Email"] + "|" + el["Name"] + ">"
+	  }
+	  else if (el["Email"] != ""){
+	  	response = response + el["Name"] + " (" + el["Email"] + ")"
+	  }
+	  else{
+	  	response = response + el["Name"]
+	  }
+	  
+	  if (el["Location/Notes"] != ""){
+	  	response = response + " in " + el["Location/Notes"].replace("\n", ", ") + " | "
+	  }
+	  else {
+	  	response = response + " | "
+	  }
+	  if (el["Areas of Expertise"].length > 100) {
+		  response = response + el["Areas of Expertise"].replace("\n", ", ").substring(0, 100) + "...\n"		  	
+	  }
+	  else {
+		  response = response + el["Areas of Expertise"].replace("\n", ", ") + "\n"		  			  	
+	  }
+	});
+	callback(null, { 
+	text: response,
+	attachments: []
+	});
 
 
     // Only send a response to certain messages
@@ -783,7 +802,7 @@ var blob = [
     "Areas of Expertise": "Craft beer, global manufacturing and sourcing",
     "Email": "jennytha@meringglobal.com / jennytha@drinkingbuddies.cn",
     "Phone/Twitter/Website": "@jennytha",
-    "Location/Notes": "Bejing, HK, London",
+    "Location/Notes": "Bejing, Hong Kong, London",
     "Languages Spoken": ""
   },
   {
@@ -1313,7 +1332,7 @@ var blob = [
     "Areas of Expertise": "Environment, also a barrister",
     "Email": "whitfort@hku.hk",
     "Phone/Twitter/Website": 39172976,
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1323,7 +1342,7 @@ var blob = [
     "Areas of Expertise": "Former HK Chief-Sec. Hong Kong politics",
     "Email": "chanfanganson@gmail.com",
     "Phone/Twitter/Website": "Tel 2520.2383 | Fax 2520.2380",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1333,7 +1352,7 @@ var blob = [
     "Areas of Expertise": "Chinese fashion and beauty, Chinese fashion media/identity and gender studies.",
     "Email": "babettescarlet@gmail.com",
     "Phone/Twitter/Website": "@chicstranger",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1343,7 +1362,7 @@ var blob = [
     "Areas of Expertise": "China human rights",
     "Email": "franceseve@nchrd.org",
     "Phone/Twitter/Website": "(852) 6695 4083",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1353,7 +1372,7 @@ var blob = [
     "Areas of Expertise": "Education in Hong Kong & China, social, women",
     "Email": "kelly (at) kellyyang.edu.hk",
     "Phone/Twitter/Website": "@kellyyanghk",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1363,7 +1382,7 @@ var blob = [
     "Areas of Expertise": "LGBT, sexuality, sociology, feminism",
     "Email": "lucettakam@yahoo.com.hk",
     "Phone/Twitter/Website": "",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1373,7 +1392,7 @@ var blob = [
     "Areas of Expertise": "China researcher for Human Rights Watch",
     "Email": "wangm@hrw.org",
     "Phone/Twitter/Website": "",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1383,7 +1402,7 @@ var blob = [
     "Areas of Expertise": "Hong kong human rights, labor rights",
     "Email": "",
     "Phone/Twitter/Website": "hkhelperscampaign.com",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1393,7 +1412,7 @@ var blob = [
     "Areas of Expertise": "Comparitive law, Hong Kong law, social issues, domestic workers, slavery",
     "Email": "puja@hku.hk",
     "Phone/Twitter/Website": "(852) 3917 7922",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1403,7 +1422,7 @@ var blob = [
     "Areas of Expertise": "Press freedom, Hong Kong/China",
     "Email": "shirleyhkja@gmail.com",
     "Phone/Twitter/Website": "9613 3828",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1413,7 +1432,7 @@ var blob = [
     "Areas of Expertise": "Gender, sexuality - Hong Kong/China",
     "Email": "sthompson@thewomensfoundationhk.org",
     "Phone/Twitter/Website": "Tel: 25811163",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1423,7 +1442,7 @@ var blob = [
     "Areas of Expertise": "Law, legal reform",
     "Email": "susan.finder@outlook.com",
     "Phone/Twitter/Website": "https://supremepeoplescourtmonitor.com/",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1433,7 +1452,7 @@ var blob = [
     "Areas of Expertise": "Hong Kong politics, China politics",
     "Email": "pepper@cuhk.edu.hk",
     "Phone/Twitter/Website": "",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1443,7 +1462,7 @@ var blob = [
     "Areas of Expertise": "Comfort women, trafficking, women's rights",
     "Email": "sylviayu@rocketmail.com",
     "Phone/Twitter/Website": "Twitter: @Sylvia_YF  Facebook: @ComfortWomenBook",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1453,7 +1472,7 @@ var blob = [
     "Areas of Expertise": "Refugees, asylum seeker, migrant worker rights",
     "Email": "victoria@justicecentre.org.hk",
     "Phone/Twitter/Website": "T (852) 3109 7359, F (852) 3422 3019",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1463,7 +1482,7 @@ var blob = [
     "Areas of Expertise": "Gender and Sexuality Associate Professor, Department of Social Work and Social Adminstration",
     "Email": "psyho@hku.hk",
     "Phone/Twitter/Website": "(852) 3917 2091",
-    "Location/Notes": "HK",
+    "Location/Notes": "Hong Kong",
     "Languages Spoken": ""
   },
   {
@@ -1473,7 +1492,7 @@ var blob = [
     "Areas of Expertise": "Gender in China. Author of Leftover Women.",
     "Email": "https://twitter.com/LetaHong",
     "Phone/Twitter/Website": "",
-    "Location/Notes": "HK/US",
+    "Location/Notes": "Hong Kong/US",
     "Languages Spoken": ""
   },
   {
