@@ -31,7 +31,7 @@ Sample Usage:\n
       });
       var response = "Found " + filteredArray.length + " experts on " + text + "\n";
       filteredArray.forEach(el => {
-        response = response + el["Name"] + " | " + el["Email"] + "\n"
+        response = response + "<mailto://" + el["Email"] + "|" + el["Name"] + "> | " + el["Areas of Expertise"].substring(0, 100) + "\n"
       });
       callback(null, { 
         text: response,
