@@ -31,7 +31,18 @@ Sample Usage:\n
       });
       var response = "Found " + filteredArray.length + " experts on " + text + "\n";
       filteredArray.forEach(el => {
-        response = response + "<mailto://" + el["Email"] + "|" + el["Name"] + "> | " + el["Areas of Expertise"].substring(0, 100) + "\n"
+		  if (validateEmail(el["Email"])){
+		  	response = response + "<mailto://" + el["Email"] + "|" + el["Name"] + "> | "
+		  }
+		  else {
+		  	response = response + el["Name"] + " | "
+		  }
+		  if (el["Areas of Expertise"].length > 100) {
+			  response = response + el["Areas of Expertise"].replace("\n", ", ").substring(0, 100) + "...\n"		  	
+		  }
+		  else {
+			  response = response + el["Areas of Expertise"].replace("\n", ", ") + "\n"		  			  	
+		  }
       });
       callback(null, { 
         text: response,
@@ -68,6 +79,11 @@ Sample Usage:\n
     ]
   });
 };
+
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
 
 var blob = [
   {
