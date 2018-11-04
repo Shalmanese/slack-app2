@@ -16,13 +16,14 @@ const lib = require('lib')({token: process.env.STDLIB_TOKEN});
 * @returns {object}
 */
 module.exports = (user, channel, text = '', command = {}, botToken = null, callback) => {
-    if (text.match("help")){
+	if (text.match("help")){
       callback(null, {
         text: `This bot helps find women experts in various fields and various locations\n
 Sample Usage:\n
 /find_an_expert tech\n
-/find_an_expert trade`,
-        attachments: []
+/find_an_expert trade in Hong Kong`,
+        attachments: [],
+		response_type: "ephemeral"
       });
     }
 	if (text.match("in ")){
@@ -41,7 +42,7 @@ Sample Usage:\n
 	var response = "Found " + filteredArray.length + " experts on " + text + "\n";
 	filteredArray.forEach(el => {
 	  if (validateEmail(el["Email"])){
-	  	response = response + "<mailto://" + el["Email"] + "|" + el["Name"] + ">"
+	  	response = response + "<mailto:" + el["Email"] + "|" + el["Name"] + ">"
 	  }
 	  else if (el["Email"] != ""){
 	  	response = response + el["Name"] + " (" + el["Email"] + ")"
@@ -68,35 +69,6 @@ Sample Usage:\n
 	attachments: []
 	});
 
-
-    // Only send a response to certain messages
-    if (text.match(/hey|hello|hi|sup/i)) {
-      var err = "";
-      //var localBlob = getBlob();
-      callback(null, {
-        text: `GOT AN IM EVENT Hey there! <@${user}> said ${text}` + localBlob.length,
-        attachments: [
-          // You can customize your messages with attachments.
-          // See https://api.slack.com/docs/message-attachments for more info.
-        ]
-      });
-    } else {
-      callback(null, {
-        text: `OH BOY, THIS SHOULDNT HAPPEN` + ` Hey there! <@${user}> said ${text}`,
-        attachments: [
-
-      ]
-
-      });
-    }
-	
-	callback(null, {
-    text: `Hello, <@${user}>...\nYou said: ${text}`,
-    attachments: [
-      // You can customize your messages with attachments.
-      // See https://api.slack.com/docs/message-attachments for more info.
-    ]
-  });
 };
 
 function validateEmail(email) {
